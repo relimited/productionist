@@ -1,5 +1,6 @@
 # productionist
 Starter modules for doing Expressionist-based live text generation in games
+TODO: rewrite this for the Node-js version.  Ensure browserfy compliance while writing.
 
 ### Setup Instructions
 
@@ -12,9 +13,9 @@ If you're on a different OS, or if that didn't work, follow the installation ins
 
 ### Pipeline
 
-Reductionist semantically indexes your Expressionist grammar to produce the two files that are needed by Productionist to operate: 
+Reductionist semantically indexes your Expressionist grammar to produce the two files that are needed by Productionist to operate:
 
-* A grammar file (.grammar) 
+* A grammar file (.grammar)
 * An expressible-meanings file (.meanings)
 
 
@@ -29,7 +30,7 @@ To index a grammar, use a command like this:
 	python reductionist.py "myContentBundle" /path/to/directory/with/your/expressionist/grammar /path/to/write/output/files/to --verbosity=1
 
 This will cause Reductionist to semantically index your Expressionist grammar, which will create two new files in the specified output directory. In this example, these files would be written to:
-	
+
 * Grammar file: /path/to/write/output/files/to/myContentBundle.grammar
 * Expressible-meanings file: /path/to/write/output/files/to/myContentBundle.meanings
 
