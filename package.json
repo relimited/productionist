@@ -1,0 +1,38 @@
+{
+  "name": "productionist-js",
+  "version": "0.0.1",
+  "description": "A node.js port of the productionist library",
+  "main": "index.js",
+  "repository": "https://github.com/relimited/productionist.git",
+  "author": "Johnathan Pagnutti",
+  "license": "MIT",
+  "scripts": {
+    "start": "babel-node src",
+    "test": "eslint src && jest --coverage",
+    "prepush": "yarn test",
+    "precommit": "yarn test"
+  },
+  "browserslist": [
+    "> 1%"
+  ],
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-eslint": "7.2.3",
+    "babel-jest": "^20.0.3",
+    "babel-preset-env": "^1.5.2",
+    "eslint": "3.19.0",
+    "eslint-config-react-app": "^1.0.4",
+    "eslint-plugin-compat": "^1.0.3",
+    "eslint-plugin-flowtype": "2.33.0",
+    "eslint-plugin-import": "2.2.0",
+    "eslint-plugin-jsx-a11y": "5.0.1",
+    "eslint-plugin-react": "7.0.1",
+    "husky": "^0.13.4",
+    "jest": "^20.0.4"
+  },
+  "dependencies": {
+    "commander": "^2.9.0",
+    "fs": "^0.0.1-security",
+    "regex": "^0.1.1"
+  }
+}
