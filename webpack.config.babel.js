@@ -7,7 +7,7 @@ import { isProd } from './src/shared/util';
 
 export default [{
   entry: [
-    './src/modules/productionist'
+    './src/index'
   ],
   target: 'node',
   output: {

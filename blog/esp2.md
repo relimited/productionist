@@ -76,4 +76,5 @@ let recipeObjects = recipes.map((recipe, i, recipes) => new Recipe(i, this, reci
 
 The ```=>``` is ES6 arrow function syntax, a fast way to write one-line functions.  The stuff in parens on the right side is the function's parameters, the left side is what the function should return.  Now, obviously, James used ```xrange()``` for a reason, and we're completely ignoring it.  I'll catch speed related problems later with a code profile, worry about that then.
 
-### 
+#### Thus on and so forth
+I'm going to deal with some of the bigger questions I raised at the top in a future post.  For right now, I'm just translating however feels natural, just to get code on the screen.  I can refactor later.  Working from the smallest objects, outward.  For any instance of fileI/O, I'm making a note to come back to later.

@@ -62,3 +62,7 @@ python/
 
 # stupid mac files
 .DS_Store
+
+# generated files
+/dist/
+/lib/

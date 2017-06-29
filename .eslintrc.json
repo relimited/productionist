@@ -2,6 +2,7 @@
   "extends": "react-app",
   "plugins": ["compat"],
   "env": {
-    "jest": true
+    "jest": true,
+    "browser": true
   }
 }

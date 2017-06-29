@@ -1,27 +1,21 @@
 /**
  * File specifies an annotated context-free grammar, loaded from reductionist
  */
-//NOTE [Port] There is just so much file I/O.  Gonna shift it to a different file
-/**
- * Webpack will handle which file gets loaded here, hopefully.  The dream is to push
- * all file I/O to another class, which will get dynamically added based on our target
- */
-import Loader from 'fileLoader';
-import NonterminalSymbol from 'nonterminalSymbol';
+import NonterminalSymbol from './nonterminalSymbol';
 
 class Grammar{
   /**
    * Create a new grammar object
-   * @param  {String} grammarFileLocation a path to a grammar file.  Node wants this to be a filepath, browser wants this to be a URI
+   * @param  {Object} grammarObj          data from a .grammar file as a simple JSON object.
    * @return {Object}                     {constructor}
    */
-  constructor(grammarFileLocation){
+  constructor(grammarObj){
     // initalize a Grammar object
     // this get set by this.initParseContentFile() NOTE [Port] might get renamed there.
     this.nonterminalSymbols = null;
     this.idToTag = null;
     // parsing!
-    this.initParseJsonGrammarSpecification(grammarFileLocation);
+    this.initParseJsonGrammarSpecification(grammarObj);
     this.startSymbol = (this.nonterminalSymbols.filter((symbol) => symbol.startSymbol)).next();
     // sort the symbol list -- this needs to hapepn before rule grounding, since we rely on
     // a symbol's ID being the same as its index in this.nonterminalSymbols
@@ -87,18 +81,11 @@ class Grammar{
 
   /**
    * Parse a JSON Grammar specification exported b Expressionist to instantiate symbols and rules
-   * @param  {String} jsonGrammarPath path to a json grammar file.  The structure of this depends on the Loader
+   * @param  {Object} grammarObj      grammar data as a simple JSON object, parsed from a .grammar file
    * @return {undefined}              Method just changes internal state, does not return anything
    */
   //NOTE [Port] we want to remove the load from this function.  Pass in a reference to an already loaded object instead.
-  initParseJsonGrammarSpecification(jsonGrammarPath){
-    let grammarObj = {};
-
-    try{
-      grammarObj = Loader.loadJson(jsonGrammarPath);
-    }catch(err){
-      throw new Error({message: `Cannot load grammar --  there is no grammar file located at ${jsonGrammarPath}`});
-    }
+  initParseJsonGrammarSpecification(grammarObj){
 
     // Grab out the dictionaries mapping tag IDs to the tags themselves, which we need to execute
     // expressible meanings

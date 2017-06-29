@@ -1,7 +1,7 @@
 /**
  * A nonterminal symbol in an annotated context-free authored using an Expressionist-like tool.
  */
-import ProductionRule from 'productionRule';
+import ProductionRule from './productionRule';
 
 class NonterminalSymbol{
   /**
