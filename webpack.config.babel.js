@@ -21,7 +21,7 @@ export default [{
     ]
   }
 },
-{
+/*{
   entry: [
     './src/modules/productionist'
   ],
@@ -36,4 +36,4 @@ export default [{
       { test: /\.js$/, use: 'babel-loader', exclude: /node_modules/}
     ]
   }
-}];
+}*/];
