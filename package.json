@@ -10,7 +10,7 @@
     "start": "yarn dev:start",
     "dev:start": "babel-node src",
     "dev:wds": "webpack-dev-server --progress",
-    "prod:build": "rimraf lib && babel src -d lib --ignore .test.js && cross-env NODE_ENV=production webpack -p --progress",
+    "prod:build": "rimraf lib && babel src -d lib --ignore .test.js && cross-env NODE_ENV=production webpack --progress",
     "lint": "eslint src webpack.config.babel.js --ext .js",
     "test": "yarn lint && jest --coverage",
     "prepush": "yarn test && yarn prod:build",

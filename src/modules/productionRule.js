@@ -20,7 +20,7 @@ class ProductionRule{
     this.applicationFrequency = applicationFrequency;
     this.semanticallyMeaningful = semanticallyMeaningful;
 
-    //the body gets set by Productionist.iintGroundSymbolReferencesInARuleBody()
+    //the body gets set by Productionist.initGroundSymbolReferencesInARuleBody()
     this.body = null;
     // How this rule's application frequency will alter scores that Productionist computs for it; this
     // is determined by NonterminalSymbol._init_set_rule_frequency_score_mltipliers() by diving the
@@ -56,9 +56,11 @@ class ProductionRule{
   compileTags(){
     for(let symbol of this.body){
       if(!(symbol instanceof String)){ //i.e. if the symbol is nonterminal
+        console.log("+++ Debug +++");
+        console.log(symbol.tags);
         for(let tag of symbol.tags){
           if(!this.tags.includes(tag)){
-            this.tags.append(tag);    //NOTE [Port] I think I can convert this.tags to a set, then I don't need to worry about this.
+            this.tags.push(tag);    //NOTE [Port] I think I can convert this.tags to a set, then I don't need to worry about this.
           }
         }
       }

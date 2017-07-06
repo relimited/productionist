@@ -16,7 +16,7 @@ class Grammar{
     this.idToTag = null;
     // parsing!
     this.initParseJsonGrammarSpecification(grammarObj);
-    this.startSymbol = (this.nonterminalSymbols.filter((symbol) => symbol.startSymbol)).next();
+    this.startSymbol = this.nonterminalSymbols.filter((symbol) => symbol.startSymbol)[0]; //NOTE [port] the .next() construction to doesn't really work in JS
     // sort the symbol list -- this needs to hapepn before rule grounding, since we rely on
     // a symbol's ID being the same as its index in this.nonterminalSymbols
     //NOTE [Port] probably a better way to do this, but IIRC JS needs a compare function
@@ -34,7 +34,7 @@ class Grammar{
     //collect all production rules
     this.productionRules = []
     for (let symbol of this.nonterminalSymbols){
-      this.productionRules.push(symbol.productionRules);
+      this.productionRules = this.productionRules.concat(symbol.productionRules);
     }
     this.productionRules.sort((a, b) => {
       if(a.id < b.id){
@@ -53,7 +53,7 @@ class Grammar{
         if(symbol instanceof String && !this.terminalSymbols.includes(symbol)){
           //NOTE [Port] JavaScript's baseline encoding is UCS2, and JS doesn't have a seperate unicode object.
           //NOTE Testing for a String at this point
-          this.terminalSymbols.append(symbol); //NOTE [Port] This may actually be a set.  We have a data type for that!
+          this.terminalSymbols.push(symbol); //NOTE [Port] This may actually be a set.  We have a data type for that!
         }
       }
     }
@@ -95,7 +95,7 @@ class Grammar{
     let nonterminalSymbolSpecifications = grammarObj['nonterminal_symbols'];
     for(let symbolId in nonterminalSymbolSpecifications){
       let nonterminalSpec = nonterminalSymbolSpecifications[symbolId];
-      symbolObjects.append(new NonterminalSymbol(
+      symbolObjects.push(new NonterminalSymbol(
         Number(symbolId),
         nonterminalSpec['name'],
         nonterminalSpec['tags'],
@@ -116,7 +116,7 @@ class Grammar{
   initGroundSymbolReferencesInAllProductionRuleBodies(){
     for(let symbol of this.nonterminalSymbols){
       for(let rule of symbol.productionRules){
-        this.initGroundSymbolReferencesInARleBody(rule);
+        this.initGroundSymbolReferencesInARuleBody(rule);
       }
     }
   }
@@ -130,15 +130,15 @@ class Grammar{
     let ruleBodySpecification = productionRule.bodySpecification;
     let ruleBodyWithResolvedSymbolReferences = [];
     for(let symbolReference of ruleBodySpecification){
-      if (symbolReference instanceof Number){
+      if (typeof symbolReference === 'number'){ //NOTE [Port] javascript type checking is a pain.  instanceof Number deals with objects, not number primatives.
         // the symbol's ID, which is also its index in this.nonterminalSymbols
         // We've encountered a reference to a nonterminal symbol, we need to resolve this
         // reference and append the nonterminal symbol itself to the list that we're building
-        ruleBodyWithResolvedSymbolReferences.append(this.nonterminalSymbols[symbolReference]);
+        ruleBodyWithResolvedSymbolReferences.push(this.nonterminalSymbols[symbolReference]);
       }else{
         //We've encountered a terminal symbol, so we can just append this string itself
         //to the list we're building
-        ruleBodyWithResolvedSymbolReferences.append(symbolReference);
+        ruleBodyWithResolvedSymbolReferences.push(symbolReference);
       }
       productionRule.body = ruleBodyWithResolvedSymbolReferences;
     }
