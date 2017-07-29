@@ -1,9 +1,8 @@
 /**
- * This is actually what node runs when we start the script, so this is where CLI
- * parsing will happen.
+ * CLI interface for productionist-js
  * @author Johnathan Pagnutti
  *
- * NOTE: probably should rename this and make it the compilation target for node
+ * NOTE: probably should rename this and make it the compilation target for node-cli
  */
 
 /**
@@ -84,7 +83,9 @@ var productionist = new Productionist(
   Program.verbosity
 );
 
-//NOTE [Port] we gotta finish with the productionist object before we can start to use it.
+//NOTE [Port] we gotta finish the productionist object before we can start to use it.
+//            This means loading in affiliated files and updating the object as each one
+//            loads in.
 productionist.finalizeProductionist()
   .then(productionist => {
     var outputs = [];
@@ -176,4 +177,5 @@ productionist.finalizeProductionist()
     if (productionist.reptitionPenalityMode && false){
       return productionist.saveRepetitionPenaltiesFile(); //TODO this is not currently, but we'd return another promise here.
     }
-  });
+  })
+    .catch(err => console.log(err));

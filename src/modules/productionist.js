@@ -303,7 +303,7 @@ class Productionist {
     let satisficingExpressibleMeanings = this.compileSatisficingExpressibleMeanings(contentRequest);
     // if there's no satisficing content requests, throw an error
     if(satisficingExpressibleMeanings === undefined || satisficingExpressibleMeanings.length === 0){
-      throw new Error("Error: The submitted content request cannont be fulfilled by using this grammar.");
+      throw new Error("Error: The submitted content request cannot be fulfilled by using this grammar.");
     }
 
     // Select one of these to target for generation, either randomly or by using the scoring metric
@@ -418,6 +418,7 @@ class Productionist {
       //NOTE [PORT] javascript sets don't have the operations that python sets do, and I'd
       //prefer not to touch the default Set class, in case it gets changed later
       //testing to see if em.tags is a superset of contentRequest.mustHave
+  
       let hasRequiredTag = [...em.tags].reduce((acc, elm) => {
         if(acc === true){
           return true;
@@ -701,12 +702,14 @@ class Productionist {
     }else if(!this.scoringModesEngaged){
       // If no scoring mode is engaged, we can simply rnadomly select a wildcard rule
       // NOTE [Port] original code attempts to make a random choice from a list, and catches an index error
-      //            if the list is empty.  I'm going to just check and throw---it's more similar to how
+      //            if the list is empty, then throws an authoring error.
+      //            I'm going to just check list length and throw---it's more similar to how
       //            earlier assert statements look in JS.
       if(candidateWildcardRules.length === 0){
         throw new Error(`AuthoringError: THe nonterminal symbol ${nonterminalSymbol.name}
            has no available wildcard rules, which means it cannont be expanded.`);
       }
+      selectedWildcardRule = candidateWildcardRules[Math.floor(Math.random() * candidateWildcardRules.length)];
     }else{
       // otherwise, w eneed to compute a utility distrbution over the candidate wildcard rules
       let scores = {};
@@ -732,6 +735,8 @@ class Productionist {
    * @private
    */
   executeProductionRule(rule, nTabsForDebug){
+    //console.log("In Production Rule");
+    //console.log(rule);
     let debugWhitespace = new Array(nTabsForDebug).join('  '); //NOTE [Port] JS String multipulcation can get weird, so abusing Array.prototype.join()
     if(this.verbosity > 1){
       console.log(`${debugWhitespace}Using production rule #${rule.id}: '${rule.toString()}'`);
