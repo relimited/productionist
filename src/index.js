@@ -44,7 +44,7 @@ Program
   .option('--test', "Whether to engage test mode (flag argument); when test mode is engaged, the system forms a random " +
                     "content request and attempts to satisfy it.")
   .option('--seed', "An integer seed for the pseudrandom number generator that Productionist uses", parseInt)
-  .option('--verbosity', "How verbose Productionist's debug text should be (0=no debug text, 1=more debug text, 2=most debug text)", parseInt)
+  .option('--verbosity <verb>', "How verbose Productionist's debug text should be (0=no debug text, 1=more debug text, 2=most debug text)", parseInt)
 
 Program
   .command('* <content_bundle_name> <content_bundle_dir>')
@@ -120,16 +120,16 @@ productionist.finalizeProductionist()
         for(let s of productionist.grammar.nonterminalSymbols){
           allTags.add(s);
         }
-        mustHave = new Set([...allTags.values()][Math.random() * allTags.length]);
+        mustHave = new Set([...allTags][Math.floor(Math.random() * allTags.size)].tags);
         mustNotHave = new Set();
         scoringMetric = [];
       }
       let contentRequest = new ContentRequest(mustHave, mustNotHave, scoringMetric);
-      if(Program.args.verbosity > 0){
+      if(Program.verbosity > 0){
         console.log(
           "\n-- Attempting to fulfill the following content request:\n" +
-          `\n\tMust have: ${contentRequest.mustHave ? contentRequest.mustHave.join(', ') : 'N/A'}` +
-          `\n\tMust not have: ${contentRequest.mustNotHave ? contentRequest.mustNotHave.join(', '): 'N/A'}` +
+          `\n\tMust have: ${contentRequest.mustHave.size > 0 ? [...contentRequest.mustHave.values()].join(', ') : 'N/A'}` +
+          `\n\tMust not have: ${contentRequest.mustNotHave.size > 0 ? [...contentRequest.mustNotHave.values()].join(', '): 'N/A'}` +
           `\n\tScoring metric: ${scoringMetric.length > 0 ? scoringMetric.map(t => t.toString()).join(', ') : 'N/A'}`
         )
       }

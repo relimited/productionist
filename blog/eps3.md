@@ -84,3 +84,16 @@ new Promise for a fleshed out Productionist object
 
 #### Jesus, why
 A lot of the web is asynchronous.  If we were to write a visualization library over Productionist, it would be able to start doing its renders before we were done with all the ajax calls to the various files Productionist needs to work.  In a game that uses Productionist, we're not blocking resources while we wait for our I/O, so other assets can get loaded in the meantime.  That being said, it's a little wonky to work with.  I've used Phaser.js, and it manages to handle its asset loading without resorting to async shenanigans.  I don't know how well Promises interact with Phaser's states, so that might not actually be useful.
+
+#### A big rewrite, some minor things, then LIST HELL
+There's always a bunch of low-key stuff you gotta iterate through.  ESLint was pretty good about catching typos, but my fairly lax rules let a lot of things slip through.  I also decided that, because a lot of productionist's functions required special, bespoke objects and I didn't know what those looked like, I'd try to get a complete run first before writing unit tests (and unit tests done before adding some extra stuff).
+
+Along those lines, I tweaked how the project gets built in ```package.json```.  I only wrote the loader designed to work with node, so I commented out the build for javascript.  Otherwise, the webpack dev server (node dev:wds) is rebuilding the project when files change and putting the temp version in the ./lib/ folder.  So, all is going well, until I hit my first error that looks like this:
+```
+TypeError: Cannot read property 'Symbol(Symbol.iterator)' of undefined
+```
+Wut?
+
+So, the trick here is that the ```javascript for(let __ of __) { ... }``` loop iterates through each element of an iterable object.  JavaScript figures out if objects are iterable by looking for a property of that object, ```Symbol.iterator``` (the error code is slightly different than this because ```Symbol.iterator``` actually needs to be a function that's going to get passed to an internal ```Symbol(...)``` function).
+
+That's a bit much, the long and short is, JavaScript is trying to iterate over something and can't.  Which means something that I think should be an Array, Set, etc. isn't.  This happened... several times.  Sometimes it was confusion over how Python behaves (I'm writing this post a bit behind when I first hit that problem), other times I just forgot to return something, and a few times it was due to forgetting that a ```javascript Number``` object and the number 4 have different types.

@@ -138,13 +138,15 @@ class Productionist {
         return this.loadExpressibleMeanings(`${this.grammarFileLocation}/${this.contentBundle}.meanings`);
       })
       .then(meanings => {
-        this.expressibleMeanigns = meanings;
+        console.log("Figuring out if we need to handle a repetitions file...");
+        this.expressibleMeanings = meanings;
         if(this.reptitionPenaltyMode){
           if(HAVE_REPETITIONS_FILE_PRESIST_ACROSS_RUNTIME_INSTANCES){
-            let repetitionsFilePath = this.grammarFileLocation.substring(0, this.grammarFileLocation.length - 6);
+            let repetitionsFilePath = `${this.grammarFileLocation.substring(0, this.grammarFileLocation.length - 6)}.repetitions`;
             return Loader.loadRepetitions(repetitionsFilePath);
           }
         }
+        return undefined;
       })
       .then(repetitionPenalties => {
         //Promise success!  Either we didn't try to load a repeitionPeanlities file (in which the the object is empty)
@@ -169,9 +171,11 @@ class Productionist {
           }
         }
       }, () => {
+        console.log("In Rejection Half Of Final Promise");
         // promise failure---we couldn't get anything from the repeitions file
         this.repetitionPenalties = {}
         let grammarSymbols = this.grammar.nonterminalSymbols.concat(this.grammar.terminalSymbols);
+        console.log(grammarSymbols);
         for(let symbol of grammarSymbols){
           this.repetitionsPenalties[symbol.toString()] = 1.0;
         }
@@ -195,7 +199,7 @@ class Productionist {
     if (this.verbosity > 0){
       console.log("Loading grammar...");
     }
-    return Loader.loadGrammar(grammarFileLocation).then(grammarObj => new Grammar(grammarObj));
+    return Loader.loadGrammar(grammarFileLocation);
   }
 
   /**
@@ -225,45 +229,7 @@ class Productionist {
     }
     let expressibleMeanings = [];
     let idToTag = this.grammar.idToTag;
-    return Loader.loadExpressiblemeanings(expressibleMeaningsFileLocation)
-      .then(triples => {
-        for(let triple of triples){
-          let meaningId = triple[0];
-          let allPathsStr = triple[1];
-          let allTagsStr = triple[2];
-
-          let recipes = [];
-
-          if(this.trie){
-            //TODO [Port] skipping Tries for right now
-            return Promise.reject(new Error('This port currently does not suport Trie files, unable to create recipes.'));
-          }else{
-            for(let pathStr in allPathsStr.split('|')){
-              recipes.append(pathStr.split(',').map(ruleId => Number(ruleId)));
-            }
-          }
-          let tags = new Set();
-          for(let tagId of allTagsStr.split(',')){
-            tags.add(idToTag[tagId]);
-          }
-          expressibleMeanings.push(
-            new ExpressibleMeaning(Number(meaningId), tags, recipes)
-          );
-        }
-
-        expressibleMeanings.sort((a, b) => {
-          if(a.id < b.id){
-            return -1;
-          }else if(a.id > b.id){
-            return 1;
-          }else{
-            return 0;
-          }
-        });
-
-        return expressibleMeanings;
-      }
-    );
+    return Loader.loadExpressibleMeanings(expressibleMeaningsFileLocation, idToTag);
   }
 
   /**
@@ -334,15 +300,15 @@ class Productionist {
    */
   fulfillContentRequest(contentRequest){
     // Find all the expressible meanings that are stisfying, given the content request
-    let satisficingExpresibleMeanings = this.compileSatisficingExpressibleMeanings(contentRequest);
+    let satisficingExpressibleMeanings = this.compileSatisficingExpressibleMeanings(contentRequest);
     // if there's no satisficing content requests, throw an error
-    if(satisficingExpresibleMeanings === undefined){
+    if(satisficingExpressibleMeanings === undefined || satisficingExpressibleMeanings.length === 0){
       throw new Error("Error: The submitted content request cannont be fulfilled by using this grammar.");
     }
 
     // Select one of these to target for generation, either randomly or by using the scoring metric
     // given in the content request
-    let selectedExpressibleMeaning = this.selectExpressibleMeaning(satisficingExpresibleMeanings, contentRequest.scoringMetric);
+    let selectedExpressibleMeaning = this.selectExpressibleMeaning(satisficingExpressibleMeanings, contentRequest.scoringMetric);
 
     // Select one of the grammar paths associated with this expressible meaning
     let selectedRecipe = this.selectRecipeForExpressibleMeaning(selectedExpressibleMeaning);
@@ -404,7 +370,30 @@ class Productionist {
     // Lastly, if this content is meant to fulfill a content request, check to make sure it does so
     if (contentRequest){ //NOTE [Port] let JavaScript 'truthy' evaluation handle both undefined and null cases
       //TODO this set of flag calculations (issuperset DNE JS)
-      let contentFulfillsTheRequest = !(output.tags & contentRequest.mustNotHave) && output.tags.issuperset(contentRequest.mustHave);
+      //TODO Slightly repeating myself, refactor to use before expansion checks here as well.
+      let contentFulfillsTheRequest = true;
+
+      let hasRequiredTag = [...output.tags].reduce((acc, elm) => {
+        if(acc === true){
+          return true;
+        }
+        return contentRequest.mustHave.has(elm);
+      });
+
+      if(!hasRequiredTag){
+        contentFulfillsTheRequest = false;
+      }
+
+      //performing the intersection of output.tags and contentRequest.mustNotHave
+      let intersection = new Set([...output.tags].filter(elm => {
+        return contentRequest.mustNotHave.has(elm);
+      }));
+
+      //if the intersection set has anything, we failed to fill the content request
+      if(intersection.size > 0){
+        contentFulfillsTheRequest = false
+      }
+
       if (!contentFulfillsTheRequest){
         throw new Error("The generated content unit does not satisfy the content request.");
       }
@@ -425,7 +414,32 @@ class Productionist {
   compileSatisficingExpressibleMeanings(contentRequest){
     //TODO JS sets don't have the & or issuperset operations
     // Make sure none of these have conditions tags that are currently violated
-    return this.expressibleMeanings.map(em => !(em.tags & contentRequest.mustNotHave) && em.tags.issuperset(contentRequest.mustHave));
+    return this.expressibleMeanings.filter(em => {
+      //NOTE [PORT] javascript sets don't have the operations that python sets do, and I'd
+      //prefer not to touch the default Set class, in case it gets changed later
+      //testing to see if em.tags is a superset of contentRequest.mustHave
+      let hasRequiredTag = [...em.tags].reduce((acc, elm) => {
+        if(acc === true){
+          return true;
+        }
+        return contentRequest.mustHave.has(elm);
+      });
+
+      if(!hasRequiredTag){
+        return false;
+      }
+
+      //performing the intersection of em.tags and contentRequest.mustNotHave
+      let intersection = new Set([...em.tags].filter(elm => {
+        return contentRequest.mustNotHave.has(elm);
+      }));
+
+      //if the intersection set has anything, return false.  Otherwise, return true!
+      if(intersection.size > 0){
+        return false
+      }
+      return true
+    });
   }
 
   /**
@@ -456,6 +470,7 @@ class Productionist {
         // representations using the scoring metric
         // provided in the content request
         let scores = {};
+        console.log(candidates);
         for(let candidate of candidates){
           scores[candidate.toString()] = this.scoreExpressibleMeaning(candidate, scoringMetric);
         }
@@ -465,7 +480,7 @@ class Productionist {
           selectedExpressibleMeaning = candidates[Math.floor(Math.random() * candidates.length)];
         }else{
           // fit a probability distribution to the candidates
-          let probabilityRanges = this.fitProbabilityDistributionToDecisionCandidates(scores);
+          let probabilityRanges = this.constructor.fitProbabilityDistributionToDecisionCandidates(scores);
           // pick a specific expressible meaning to target
           selectedExpressibleMeaning = this.selectCandidateGivenProbabilityDistribution(probabilityRanges);
         }
@@ -538,7 +553,7 @@ class Productionist {
         selectedRecipe = candidates[Math.floor(Math.random() * candidates.length)];
       }else{
         // next, fit a probability distribution to the utility distribution
-        let probabilityRanges = this.fitProbabilityDistributionToDecisionCandidates(scores);
+        let probabilityRanges = this.constructor.fitProbabilityDistributionToDecisionCandidates(scores);
         // finally, select a path (using the probability distribution, if probabilistic mode is enaged)
         selectedRecipe = this.selectCandidateGivenProbabilityDistribution(probabilityRanges);
       }
@@ -582,7 +597,7 @@ class Productionist {
         score *= this.reptitionPenalties[symbol.toString()];
       }
       if(this.terseMode){
-        if(symbol instanceof String){
+        if(typeof symbol === 'string'){
           score /= symbol.length;
         }
       }else{
@@ -724,11 +739,11 @@ class Productionist {
 
     // Add to our record of the explicit path we took in the grammar to produce the
     // content we'll be sending back
-    this.explictPathTaken.push(rule);
+    this.explicitPathTaken.push(rule);
     // Terminally expand this symbol
     let terminallyExpandedSymbolsInThisRuleBody = [];
-    for(let symbol in rule.body){
-      if(symbol instanceof String){
+    for(let symbol of rule.body){
+      if(typeof symbol === 'string'){
         terminallyExpandedSymbolsInThisRuleBody.push(symbol);
       }else{
         // Nonterminal symbol, which means we have to expand it
@@ -806,7 +821,7 @@ class Productionist {
     // Terminally expand this symbol
     let terminallyExpandedSymbolsInThisRuleBody = [];
     for(let symbol of rule.body){
-      if(symbol instanceof String){
+      if(typeof symbol === 'string'){
         //terminal symbol (no need to expand)
         terminallyExpandedSymbolsInThisRuleBody.push(`"${symbol.toString()}"`);
       }else{

@@ -12,8 +12,8 @@ Anyway, it had been a while since I translated something, and was itching to get
 
 ### Project Metadata
 1. Background Knowledge: Medium-Advanced
-  * Most of this project's background knowledge is application-focused, not theoretical.  I'll be referencing a lot of Libraries offhand, and use some high-level descriptions of what they do. I am setting up an ES6 development stack for both node and browser JavaScript, so get ready
-  * Most of that is setting up a development environment for JavaScript, which is important for this project as a lot of people may potentially use this library (a whole ten people, maybe!)
+  * Most of this project's background knowledge is application-focused, not theoretical.  I'll be referencing a lot of libraries offhand, and use some high-level descriptions of what they do. I am setting up an ES6 development stack for both node and browser JavaScript, so get ready
+  * Setting up a development environment for JavaScript is important for this project as a lot of people may potentially use this library (a whole ten people, maybe!)
 2. Domain: Building a library for lots of other people to use, so we're leaning towards enterprise practices
   * This means writing unit tests, good comment practice, writing good error catching code, assert statements, etc.  I'm gonna sacrifice some rapid feedback for correctness
 

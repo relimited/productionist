@@ -50,7 +50,7 @@ class Grammar{
     this.terminalSymbols = []
     for(let rule of this.productionRules){
       for(let symbol of rule.body){
-        if(symbol instanceof String && !this.terminalSymbols.includes(symbol)){
+        if((typeof symbol === 'string') && !this.terminalSymbols.includes(symbol)){
           //NOTE [Port] JavaScript's baseline encoding is UCS2, and JS doesn't have a seperate unicode object.
           //NOTE Testing for a String at this point
           this.terminalSymbols.push(symbol); //NOTE [Port] This may actually be a set.  We have a data type for that!
@@ -150,9 +150,9 @@ class Grammar{
    * a grammar is malformed
    */
   initValidateGrammar(){
-    let checkList = this.nonterminalSymbols.filter(s => s.startSymbol !== undefined);
+    let checkList = this.nonterminalSymbols.filter(s => s.startSymbol !== false && s.startSymbol !== undefined);
     if(!(checkList.length > 0)){
-      throw new Error("This grammar has no start symbols; there ust be exactly one.");
+      throw new Error("This grammar has no start symbols; there must be exactly one.");
     }
     if(!(checkList.length === 1)){
       throw new Error("This grammar has multiple start symbols; there must be exactly one.");

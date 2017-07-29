@@ -39,7 +39,7 @@ class ProductionRule{
     //NOTE [Port] This also feels like it's fixable with a toString method on symbol objects.
     let symbolStr = "";
     for(let symbol of this.body){
-      if(symbol instanceof String){
+      if(typeof symbol === 'string'){
         symbolStr = symbolStr.concat(symbol);
       }else{
         symbolStr = symbolStr.concat(`[[${symbol.name}]]`);
@@ -55,9 +55,7 @@ class ProductionRule{
    */
   compileTags(){
     for(let symbol of this.body){
-      if(!(symbol instanceof String)){ //i.e. if the symbol is nonterminal
-        console.log("+++ Debug +++");
-        console.log(symbol.tags);
+      if(!(typeof symbol === 'string')){ //i.e. if the symbol is nonterminal
         for(let tag of symbol.tags){
           if(!this.tags.includes(tag)){
             this.tags.push(tag);    //NOTE [Port] I think I can convert this.tags to a set, then I don't need to worry about this.
