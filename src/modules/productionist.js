@@ -12,9 +12,7 @@
  * This port shifts that code away, because JS environments can often be file I/O unfriendly.  This port provides
  * a series of loaders (based on ajax requests and the Node.js fs module) and does file I/O outside of core processing
  */
-import Grammar from "./grammar";
 import Loader from './fs-loader'; //NOTE this should be replaced with a context-dependent loading scheme
-import ExpressibleMeaning from './expressibleMeaning';
 import Output from './output';
 
 //NOTE [Port]: json library isn't needed (JSON is native to JS)
@@ -227,7 +225,6 @@ class Productionist {
     if(this.verbosity > 0){
       console.log("Loading expressible meanings...");
     }
-    let expressibleMeanings = [];
     let idToTag = this.grammar.idToTag;
     return Loader.loadExpressibleMeanings(expressibleMeaningsFileLocation, idToTag);
   }
@@ -374,11 +371,6 @@ class Productionist {
       let contentFulfillsTheRequest = true;
 
       let hasRequiredTag = true;
-      for(let tag of contentRequest.mustHave){
-        if(!em.tags.has(tag)){
-          hasRequiredTag = false;
-        }
-      }
 
       for(let tag of contentRequest.mustHave){
         if(!output.tags.has(tag)){
