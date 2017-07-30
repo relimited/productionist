@@ -373,12 +373,18 @@ class Productionist {
       //TODO Slightly repeating myself, refactor to use before expansion checks here as well.
       let contentFulfillsTheRequest = true;
 
-      let hasRequiredTag = [...output.tags].reduce((acc, elm) => {
-        if(acc === true){
-          return true;
+      let hasRequiredTag = true;
+      for(let tag of contentRequest.mustHave){
+        if(!em.tags.has(tag)){
+          hasRequiredTag = false;
         }
-        return contentRequest.mustHave.has(elm);
-      });
+      }
+
+      for(let tag of contentRequest.mustHave){
+        if(!output.tags.has(tag)){
+          hasRequiredTag = false;
+        }
+      }
 
       if(!hasRequiredTag){
         contentFulfillsTheRequest = false;
@@ -418,13 +424,12 @@ class Productionist {
       //NOTE [PORT] javascript sets don't have the operations that python sets do, and I'd
       //prefer not to touch the default Set class, in case it gets changed later
       //testing to see if em.tags is a superset of contentRequest.mustHave
-  
-      let hasRequiredTag = [...em.tags].reduce((acc, elm) => {
-        if(acc === true){
-          return true;
+      let hasRequiredTag = true;
+      for(let tag of contentRequest.mustHave){
+        if(!em.tags.has(tag)){
+          hasRequiredTag = false;
         }
-        return contentRequest.mustHave.has(elm);
-      });
+      }
 
       if(!hasRequiredTag){
         return false;
