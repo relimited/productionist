@@ -12,7 +12,6 @@
  * This port shifts that code away, because JS environments can often be file I/O unfriendly.  This port provides
  * a series of loaders (based on ajax requests and the Node.js fs module) and does file I/O outside of core processing
  */
-import Loader from './fs-loader'; //NOTE this should be replaced with a context-dependent loading scheme
 import Output from './output';
 
 //NOTE [Port]: json library isn't needed (JSON is native to JS)
@@ -46,11 +45,13 @@ var REPETITION_PENALTY_RECOVERY_RATE = 1.2;
  * @param  {Boolean} repetitionPenaltyMode   flag to use a penalty to discourage repeated use of 'wildcard rules'
  * @param  {Boolean} terseMode              flag to have the system favor production rules that produce terser dialogue
  * @param  {Number} verbosity              [0, 1, 2] amount of logging information to print
+ * @param  {Constructor} Loader              The way we're going to load files (NOTE port specific)
  * @return {Object}                         {Constructor}
  */
 //NOTE [Port] we want to remove the load from this function.  Pass in a reference to an already loaded object instead.
 class Productionist {
-  constructor(contentBundleName, contentBundleDirectory, probabilisticMode, repetitionPenaltyMode, terseMode, verbosity){
+  constructor(contentBundleName, contentBundleDirectory, probabilisticMode,
+    repetitionPenaltyMode, terseMode, verbosity, Loader){
     // Create a new productionist object!
     this.contentBundle = contentBundleName;
     //If verbosity is 0, no information will be printed out during processing; if 1, information about how far along
@@ -97,6 +98,10 @@ class Productionist {
 
     //NOTE [Port]: Adding a property to say if this productionist object is finalized or not.  Non-finalized objects
     //NOTE cannot be used yet, and still need finalizeProductionist to be called.
+    this.finalized = false;
+
+    //NOTE [Port]: due to multiple ways to load files, we give productionist a loader to do its file loads
+    this.loader = Loader;
   }
 
   /**
@@ -141,7 +146,7 @@ class Productionist {
         if(this.reptitionPenaltyMode){
           if(HAVE_REPETITIONS_FILE_PRESIST_ACROSS_RUNTIME_INSTANCES){
             let repetitionsFilePath = `${this.grammarFileLocation.substring(0, this.grammarFileLocation.length - 6)}.repetitions`;
-            return Loader.loadRepetitions(repetitionsFilePath);
+            return this.loader.loadRepetitions(repetitionsFilePath);
           }
         }
         return undefined;
@@ -197,7 +202,7 @@ class Productionist {
     if (this.verbosity > 0){
       console.log("Loading grammar...");
     }
-    return Loader.loadGrammar(grammarFileLocation);
+    return this.loader.loadGrammar(grammarFileLocation);
   }
 
   /**
@@ -226,7 +231,7 @@ class Productionist {
       console.log("Loading expressible meanings...");
     }
     let idToTag = this.grammar.idToTag;
-    return Loader.loadExpressibleMeanings(expressibleMeaningsFileLocation, idToTag);
+    return this.loader.loadExpressibleMeanings(expressibleMeaningsFileLocation, idToTag);
   }
 
   /**

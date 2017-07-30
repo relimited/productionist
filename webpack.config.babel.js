@@ -7,7 +7,7 @@ import { isProd } from './src/shared/util';
 
 export default [{
   entry: [
-    './src/index'
+    './src/nodeCli'
   ],
   target: 'node',
   output: {
@@ -23,11 +23,11 @@ export default [{
 },
 /*{
   entry: [
-    './src/modules/productionist'
+    './src/browser'
   ],
   target: 'web',
   output: {
-    filename: 'js/lib.js',
+    filename: 'js/lib.web.js',
     path: path.resolve(__dirname, 'dist'),
     publicPath: isProd ? '/static/' : `http://localhost:${WDS_PORT}/dist/`,
   },

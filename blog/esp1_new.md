@@ -4,9 +4,9 @@
 
 Hello!  Welcome to another project in this here side-project blog.  I was going to a bar when I ran into the amazing James Ryan ([Twitter](https://twitter.com/xfoml), [github](http://github.com/james-owen-ryan)). He's got a really cool grammar engine called Expressionist, which has lots of submodules that follow the -ist naming convention.  James would like to release the Expressionist library (framework?) in a bunch of different languages.
 
-Expressionist is cool because it lets people tag various symbols, and then you can ask for grammar productions that contain certain symbols (or definitely don't have certain symbols).  I believe Expressionist has shown promise as a dialogue engine for games, but it could also be useful for various generative art projects.  Considering that JavaScript is the language of choice for things that are going to be on the web, this seems like a port that makes sense.
+Expressionist is cool because it lets people tag various symbols, and then you can ask for grammar productions that contain certain symbols (or definitely don't have certain symbols) (link to the project here: https://www.jamesryan.world/projects#/expressionist/).  I believe Expressionist has shown promise as a dialogue engine for games, but it could also be useful for various generative art projects.  Considering that JavaScript is the language of choice for things that are going to be on the web, this seems like a port that makes sense.
 
-Here's a weird fact about me: I love code translation work.  I don't have a good reason why.  It's a fairly straight-forward task, with easy constraints (make X do what it already does, but it's written in C now).  There are not many design decisions to get hung up on.  You learn a little bit about the people whose code you're translating.
+Here's a weird fact about me: I love code translation work.  I don't have a good reason why.  It's a fairly straight-forward task, with easy constraints (make X do what it already does, but it's written in Lisp now).  There are not many design decisions to get hung up on.  You learn a little bit about the people whose code you're translating.
 
 Anyway, it had been a while since I translated something, and was itching to get back to it.  Thus, writing Productionist in JavaScript was born!  I've translated other code to JavaScript before (primarily C# Unity libraries), and am familiar with Python, so it seems like a good fit.
 
@@ -48,7 +48,7 @@ Ok, now that we've thought about where the code should live, we can start buildi
 * Node.js: We need to install node to create node servers.  We'll also be using npm, the package manager bundled with node to install a lot of our needed libraries.  Package managers make downloading / installing libraries very easy.
 * Yarn:  Yarn is a reimplementation of npm, it works alongside npm's structure and repositories, but is faster.  Yarn also avoids gnarly circular dependency problems that npm sometimes runs into, and that's a good thing.  Never again with circular dependency problems.  Never, ever again.
 * babel: Babel takes ES6 code and converts it to ES2015 code.  This is key for a few reasons:
-  * lets us use all the sexy ES6 features that aren't fully supported yet (I'll talk about them when I use them)
+  * lets us use all the sexy ES6 features that aren't fully supported yet
   * helps ensure that the code will Just Run on more platforms (they just need to support all of ES2015)
 * eslint: tool for reading JavaScript files and identifying problems before you run code.  Eslint can catch things like missing parenthesis, commas, etc.  I think the proper term for tools like this one is a _Linter_.  My text editor of choice, Atom, has a plugin that runs eslint every time I change a file, so I'm getting realtime feedback on my silly typing errors.  Eslint also helps enforce some style considerations, to help keep my code readable.
   * config-react-app: eslint is very configurable, and I haven't quite settled on presets I like.  I'm using the ones that come from the create-react-app project (which is a project that has all the code you need to get started on a React app), because I like them.  Airbnb also has a very popular configuration, I find it to be too restrictive (I like double quotes around strings, OK?!?).
@@ -59,4 +59,4 @@ Ok, now that we've thought about where the code should live, we can start buildi
 
 ### Step 3: Get a beer
 
-Ok, that's enough for now.  There is potential supplemental post about my webpack configuration, espically for people who want to write code that might be deployed in a lot of different places.
+Ok, that's enough for now.  Next espisode/post I'll actually get to coding.

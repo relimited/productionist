@@ -12,6 +12,7 @@
 import Program from 'commander'; //using commander for node to do argument parsing
 import Productionist from './modules/productionist';
 import ContentRequest from './modules/contentRequest';
+import Loader from './modules/fs-loader';
 
 //NOTE [Port] some temp vars here because commander isn't super great at non-named arguments
 var contentBundleName;
@@ -80,7 +81,8 @@ var productionist = new Productionist(
   !Program.nonprobabilistic,
   Program.repetition_penalty,
   Program.terse,
-  Program.verbosity
+  Program.verbosity,
+  Loader
 );
 
 //NOTE [Port] we gotta finish the productionist object before we can start to use it.

@@ -2,7 +2,7 @@
 ## Productionist JavaScript Port Eps 2: A lot of Rewriting
 ### Learning is a Thing You Do
 
-Woo, episode 2!  I'm currently porting the amazing James Ryan's ([Twitter](https://twitter.com/xfoml), [github](http://github.com/james-owen-ryan)) Productionist to JavaScript.  Last episode I spent most of the time talking about setting a bunch of utilities to help me write code, now we can actually start doing translation!
+Woo, episode 2!  I'm currently porting the amazing James Ryan's ([Twitter](https://twitter.com/xfoml), [github](http://github.com/james-owen-ryan)) Productionist to JavaScript (link to the project here: https://www.jamesryan.world/projects#/expressionist/).  Last episode I spent most of the time talking about setting a bunch of utilities to help me write code, now we can actually start doing translation!
 
 #### Lets open the file...
 
