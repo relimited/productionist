@@ -1,0 +1,22 @@
+<html>
+<head>
+  <script type='text/javascript' src='./dist/js/lib.web.js'></script>
+  <script type='text/javascript'>
+    //browser's gonna be real annoying to work with imports, so this is gonna get a little weird.
+    var prod = new Productionist.default("faeMemoryLibrary", "http://localhost:8080/python/faeMemoryLibrary")
+    prod.finalize().then(productionist => {
+      let contentRequest = {
+        'mustHave': new Set(["tags:bird"]),
+        'mustNotHave': new Set(),
+        'scoringMetric': []
+    }
+
+    let output = productionist.fulfillContentRequest(contentRequest)
+    console.log(output.toString());
+    console.log(output.tags);
+    });
+  </script>
+</head>
+<body>
+</body>
+</html>

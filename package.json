@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "start": "yarn dev:start",
-    "dev:start": "babel-node src",
+    "dev:start": "babel-node src/nodeCLI.js",
     "dev:wds": "webpack-dev-server --debug --devtool source-map --output-pathinfo --progress",
     "prod:build": "rimraf lib && babel src -d lib --ignore .test.js && cross-env NODE_ENV=production webpack --progress",
     "lint": "eslint src webpack.config.babel.js --ext .js",

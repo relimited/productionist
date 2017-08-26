@@ -141,7 +141,6 @@ class Productionist {
         return this.loadExpressibleMeanings(`${this.grammarFileLocation}/${this.contentBundle}.meanings`);
       })
       .then(meanings => {
-        console.log("Figuring out if we need to handle a repetitions file...");
         this.expressibleMeanings = meanings;
         if(this.reptitionPenaltyMode){
           if(HAVE_REPETITIONS_FILE_PRESIST_ACROSS_RUNTIME_INSTANCES){
@@ -173,14 +172,22 @@ class Productionist {
             console.log("Loading repetitions file...");
           }
         }
-      }, () => {
+      }, message => {
         console.log("In Rejection Half Of Final Promise");
-        // promise failure---we couldn't get anything from the repeitions file
-        this.repetitionPenalties = {}
+        // A promise upstream has failed.
+        // This might be recoverable, if we're just missing a
+        // repeitions file, then initialize one.
+
+        //If we're missing meanings or a grammar, die a cold, sad death.
+        if(this.expressibleMeanings === undefined || this.grammar === undefined){
+          return Promise.reject(message);
+        }
+
+        //promise failure---we couldn't get anything from the repeitions file
+        this.repetitionPenalties = {};
         let grammarSymbols = this.grammar.nonterminalSymbols.concat(this.grammar.terminalSymbols);
-        console.log(grammarSymbols);
         for(let symbol of grammarSymbols){
-          this.repetitionsPenalties[symbol.toString()] = 1.0;
+          this.repetitionPenalties[symbol.toString()] = 1.0;
         }
         if (this.verbosity > 0){
           console.log("Cound not load repetitions dictionary -- initializing new one...");

@@ -7,7 +7,7 @@ import { isProd } from './src/shared/util';
 
 export default [{
   entry: [
-    './src/nodeCli'
+    './src/nodeCLI'
   ],
   target: 'node',
   output: {
@@ -21,19 +21,22 @@ export default [{
     ]
   },
 },
-/*{
+{
   entry: [
-    './src/browser'
+    './src/browserAPI'
   ],
   target: 'web',
   output: {
     filename: 'js/lib.web.js',
     path: path.resolve(__dirname, 'dist'),
     publicPath: isProd ? '/static/' : `http://localhost:${WDS_PORT}/dist/`,
+    library: 'Productionist',
+    libraryTarget: 'umd',
+    umdNamedDefine: true
   },
   module: {
     rules: [
       { test: /\.js$/, use: 'babel-loader', exclude: /node_modules/}
     ]
   }
-}*/];
+}];

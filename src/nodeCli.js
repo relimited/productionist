@@ -1,8 +1,6 @@
 /**
  * CLI interface for productionist-js
  * @author Johnathan Pagnutti
- *
- * NOTE: probably should rename this and make it the compilation target for node-cli
  */
 
 /**

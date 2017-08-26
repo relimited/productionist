@@ -11,7 +11,7 @@ class ContentRequest{
    * @return {Object}               {constructor}
    */
   constructor(mustHave, mustNotHave, scoringMetric){
-    // Tags taht must be associated with generated content
+    // Tags that must be associated with generated content
     this.mustHave = mustHave !== undefined && mustHave !== null ? mustHave : new Set(); //NOTE [Port] might have to do some processing to get this to be a set
     // tags that must *not* be associated with generated content
     this.mustNotHave = mustNotHave !== undefined && mustNotHave !== null ? mustNotHave : new Set();
