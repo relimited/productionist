@@ -2,12 +2,12 @@
  * browser API interface for productionist-js
  * @author Johnathan Pagnutti
  */
+import 'babel-polyfill';
+import Productionist from './modules/productionist';
+import ContentRequest from './modules/contentRequest';
+import Loader from './modules/fetch-loader';
 
- import Productionist from './modules/productionist';
- import ContentRequest from './modules/contentRequest';
- import Loader from './modules/fetch-loader';
-
- class ProductionistAPI{
+class ProductionistAPI{
    constructor(contentBundleName, contentBundlePath, nonprobabilistic=false,
      repeitionPenalty=false, terse=false, verbosity=0){
      this.productionist = new Productionist(
@@ -26,4 +26,4 @@
    }
  }
 
-export default ProductionistAPI
+export default ProductionistAPI;

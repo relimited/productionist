@@ -8,16 +8,16 @@ function setup() {
 }
 
 function draw() {
-  prod_rdy.then(productionist => {
+    prod_rdy.then(productionist => {
     var contentRequest = {
-      'mustHave': new Set(["tags:party"]),
-      'mustNotHave': new Set(["tags:fire"]),
-      'scoringMetric': []
-    }
+        'mustHave': new Set(["tags:party"]),
+        'mustNotHave': new Set(["tags:fire"]),
+        'scoringMetric': []
+      };
 
-    var output = productionist.fulfillContentRequest(contentRequest)
-    textSize(32);
-    text(output.toString(), 10, 30, 800, 600);
-    //console.log(output)
-  });
+      var output = productionist.fulfillContentRequest(contentRequest);
+      textSize(32);
+      text(output.toString(), 10, 30, 800, 600);
+      //console.log(output)
+    });
 }
