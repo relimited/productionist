@@ -1,5 +1,5 @@
 var prod;
-var prod_rdy
+var prod_rdy;
 
 function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
