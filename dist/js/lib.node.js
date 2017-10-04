@@ -2903,7 +2903,7 @@ var Productionist = function () {
     key: "scoreExpressibleMeaning",
     value: function scoreExpressibleMeaning(expressibleMeaning, scoringMetric) {
       var score = 0;
-      //NOTE [Port] you can't really do this double iteration in JavaScript.  We an break down tuples on indexes though
+      //NOTE [Port] you can't really do this double iteration in JavaScript.  We can break down tuples on indexes though
       var _iteratorNormalCompletion16 = true;
       var _didIteratorError16 = false;
       var _iteratorError16 = undefined;
