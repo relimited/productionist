@@ -68,51 +68,51 @@ class Productionist {
         //lexical/syntatic variation, i.e., not variation in the tags that are accumulated); this
         //attribute gets set by this.followRecipe()
         this.remainingPath = [];
-    // The explicit path holds all production rules that the system ended up executing
-    // during generation (including ones that were selected as wildcard rules, which would thus not
-    // be included in the remaining path); this is saved a record of the generation process that
-    // produced a line, and is critically utilized to produce the bracked expression for a line
-    this.explicitPathTaken = [];
-    // Whether Productionist is currently targeting a particular expressible meaning, which means
-    // that it cannot go down paths that would accumulate tags outside that meaning, or Whether
-    // it is generating example terminal results of expanding nonterminal symbols or executing
-    // production rules, in which case every production rule becomes a wildcard rule
-    this.targetingMeaning = true;
-    // In probabilistic mode, Productionist will select which expressible meanings to target
-    // probabilistically, by fitting a probability distribution to the candidates uses the scores
-    // given to them; otherwise, Productionist will simply pick the highest scoring one
-    this.probabilisticMode = probabilisticMode;
-    // In reptition-penalty mode, semantically meaningless rules ("wildcard rules") that have been
-    // used to produce recently generated content are less likely to be selected again (with a decay
-    // rate on the penalty for selecting them); we do this by maintaining a current penalty for each
-    // rule that increases each time the rule is used and decays as the rule is not used
-    this.reptitionPenaltyMode = repetitionPenaltyMode;
+        // The explicit path holds all production rules that the system ended up executing
+        // during generation (including ones that were selected as wildcard rules, which would thus not
+        // be included in the remaining path); this is saved a record of the generation process that
+        // produced a line, and is critically utilized to produce the bracked expression for a line
+        this.explicitPathTaken = [];
+        // Whether Productionist is currently targeting a particular expressible meaning, which means
+        // that it cannot go down paths that would accumulate tags outside that meaning, or Whether
+        // it is generating example terminal results of expanding nonterminal symbols or executing
+        // production rules, in which case every production rule becomes a wildcard rule
+        this.targetingMeaning = true;
+        // In probabilistic mode, Productionist will select which expressible meanings to target
+        // probabilistically, by fitting a probability distribution to the candidates uses the scores
+        // given to them; otherwise, Productionist will simply pick the highest scoring one
+        this.probabilisticMode = probabilisticMode;
+        // In reptition-penalty mode, semantically meaningless rules ("wildcard rules") that have been
+        // used to produce recently generated content are less likely to be selected again (with a decay
+        // rate on the penalty for selecting them); we do this by maintaining a current penalty for each
+        // rule that increases each time the rule is used and decays as the rule is not used
+        this.reptitionPenaltyMode = repetitionPenaltyMode;
 
-    //Grab the path to the directory with the content bundle_name
-    //NOTE [Port]: This needs to be shifted out of the main library to be able to get data from more sources
-    if(contentBundleDirectory.endsWith("/")){ //strip trailing slash.  [Port]: might shift this to a URI
-      contentBundleDirectory = contentBundleDirectory.substring(0, contentBundleDirectory.length - 2);
+        //Grab the path to the directory with the content bundle_name
+        //NOTE [Port]: This needs to be shifted out of the main library to be able to get data from more sources
+        if(contentBundleDirectory.endsWith("/")){ //strip trailing slash.  [Port]: might shift this to a URI
+            contentBundleDirectory = contentBundleDirectory.substring(0, contentBundleDirectory.length - 2);
+        }
+        // hold onto the grammar file path.
+        this.grammarFileLocation = contentBundleDirectory;
+
+        //NOTE [Port]: Adding a property to say if this productionist object is finalized or not.  Non-finalized objects
+        //NOTE cannot be used yet, and still need finalizeProductionist to be called.
+        this.finalized = false;
+
+        //NOTE [Port]: due to multiple ways to load files, we give productionist a loader to do its file loads
+        this.loader = Loader;
     }
-    // hold onto the grammar file path.
-    this.grammarFileLocation = contentBundleDirectory;
 
-    //NOTE [Port]: Adding a property to say if this productionist object is finalized or not.  Non-finalized objects
-    //NOTE cannot be used yet, and still need finalizeProductionist to be called.
-    this.finalized = false;
-
-    //NOTE [Port]: due to multiple ways to load files, we give productionist a loader to do its file loads
-    this.loader = Loader;
-  }
-
-  /**
-   * Return whether any mode is engaged such that candidate production rules need to be scored.
-   * NOTE [Port] The way this is structured in python, I don't know how it's setter would work.  But, to keep
-   * things mostly aligned, I'm using the get/set interface in JavaScript rather than a regular function.
-   * @return {Boolean} if we need to score the production rules or not
-   */
-  get scoringModesEngated(){
-    return this.repetitionPenaltyMode || this.terseMode || this.grammar.unequalRuleFrequencies;
-  }
+    /**
+     * Return whether any mode is engaged such that candidate production rules need to be scored.
+     * NOTE [Port] The way this is structured in python, I don't know how it's setter would work.  But, to keep
+     * things mostly aligned, I'm using the get/set interface in JavaScript rather than a regular function.
+     * @return {Boolean} if we need to score the production rules or not
+     */
+    get scoringModesEngated(){
+        return this.repetitionPenaltyMode || this.terseMode || this.grammar.unequalRuleFrequencies;
+    }
 
   /**
    * Method 'finalizes' a productionist object by async loading of all the various files that
@@ -437,9 +437,9 @@ class Productionist {
 
       //if the intersection set has anything, return false.  Otherwise, return true!
       if(intersection.size > 0){
-        return false
+          return false;
       }
-      return true
+        return true;
     });
   }
 
@@ -507,7 +507,7 @@ class Productionist {
    */
   static scoreExpressibleMeaning(expressibleMeaning, scoringMetric){
     let score = 0;
-    //NOTE [Port] you can't really do this double iteration in JavaScript.  We an break down tuples on indexes though
+    //NOTE [Port] you can't really do this double iteration in JavaScript.  We can break down tuples on indexes though
     for(let elem of scoringMetric){
       let tag = elem[0];
       let weight = elem[1];

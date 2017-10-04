@@ -64,5 +64,4 @@ python/
 .DS_Store
 
 # generated files
-/dist/
 /lib/
